@@ -1,35 +1,42 @@
-from rich import print
-from tkinter import filedialog
 import getpass
 import os
+from rich import print, print_json
+from tkinter import filedialog
+from pathlib import Path
+
+
 
 user = getpass.getuser()
+extension_destination = {".txt": "Notes", 
+".pdf": "Documents"}
 
-def select_folder_to_organize():
+def select_folder_to_organize(verbose: bool = True) -> Path | None:
     folder_path = filedialog.askdirectory(
         title="Select Folder to Organize"
     )
     if folder_path:
-        print(f"""
+        if verbose is True:
+            print(f"""
 [bold cyan]Selected Folder:[/bold cyan] [green]{folder_path}[/green]
 """)
-        return folder_path
+        return Path(folder_path)
     else:
         print("[bold red]No folder selected.[/bold red]")
         return None
 
-def organize_folder(folder_path: str = f"C:/Users/{user}/Downlads"):
+def organize_folder(folder_path: Path = Path(f"C:/Users/{user}/Downloads"), verbose: bool = True):
     if not os.path.exists(folder_path):
-        print(f"[bold red]Folder path does not exist: [blink]{folder_path}[blink][/bold red]")
+        if verbose is True:
+            print(f"[bold red]Folder path does not exist: [blink]{folder_path}[blink][/bold red]")
         return
     else:
-        print(f"[bold blue]Oganizing folder:[/bold blue] [green]{folder_path}[/green]")
-        files = os.listdir(folder_path)
-        print(f"[bold yellow]Found {len(files)} files in the folder.[/bold yellow]")
-        print(f"these are the files: [magenta]{files}[/magenta]")
+        files = folder_path.iterdir()
+        if verbose is True:
+            pass
         return
     
 
 if __name__ == "__main__":
-    folder = select_folder_to_organize()
-    organize_folder(folder)
+    # folder = select_folder_to_organize(verbose=False)
+    organize_folder()
+    # print(extension_destination)
